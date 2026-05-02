@@ -2,33 +2,172 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/seed_data.dart';
+import '../models/team.dart';
 import '../providers/sticker_provider.dart';
 import 'team_detail_screen.dart';
 
-class GroupsScreen extends StatelessWidget {
+class GroupsScreen extends StatefulWidget {
   const GroupsScreen({super.key});
+
+  @override
+  State<GroupsScreen> createState() => _GroupsScreenState();
+}
+
+class _GroupsScreenState extends State<GroupsScreen> {
+  String _query = '';
+
+  List<Team> _searchTeams() {
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return const [];
+    final all = <Team>[];
+    for (final g in kGroups) {
+      all.addAll(g.teams);
+    }
+    return all
+        .where((t) =>
+            t.name.toLowerCase().contains(q) ||
+            t.code.toLowerCase().contains(q) ||
+            t.groupCode.toLowerCase() == q)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<StickerProvider>();
+    final searching = _query.trim().isNotEmpty;
+    final results = _searchTeams();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Grupos')),
-      body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-        itemCount: kGroups.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, idx) {
-          final group = kGroups[idx];
-          final owned = p.groupOwned(group.code);
-          final total = p.groupTotal(group.code);
-          return _GroupCard(
-            groupCode: group.code,
-            owned: owned,
-            total: total,
-            teams: group.teams,
-          );
-        },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Buscar país o código (BRA, ESP, A…)',
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: searching
+                    ? IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () => setState(() => _query = ''),
+                      )
+                    : null,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: (v) => setState(() => _query = v),
+            ),
+          ),
+          Expanded(
+            child: searching
+                ? _SearchResults(teams: results, provider: p)
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                    itemCount: kGroups.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, idx) {
+                      final group = kGroups[idx];
+                      return _GroupCard(
+                        groupCode: group.code,
+                        owned: p.groupOwned(group.code),
+                        total: p.groupTotal(group.code),
+                        teams: group.teams,
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _SearchResults extends StatelessWidget {
+  final List<Team> teams;
+  final StickerProvider provider;
+  const _SearchResults({required this.teams, required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    if (teams.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'Ningún país coincide con la búsqueda',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: scheme.onSurfaceVariant),
+          ),
+        ),
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      itemCount: teams.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, i) {
+        final t = teams[i];
+        final owned = provider.teamOwned(t.code);
+        final total = provider.teamTotal(t.code);
+        final completed = total > 0 && owned == total;
+        return Card(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => TeamDetailScreen(team: t)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Text(t.flag, style: const TextStyle(fontSize: 28)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Grupo ${t.groupCode} · ${t.code}',
+                          style: TextStyle(color: scheme.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (completed)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child:
+                          Icon(Icons.verified_rounded, color: scheme.primary),
+                    ),
+                  Text(
+                    '$owned/$total',
+                    style: TextStyle(
+                      color:
+                          completed ? scheme.primary : scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Icon(Icons.chevron_right_rounded,
+                      color: scheme.onSurfaceVariant),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -37,7 +176,7 @@ class _GroupCard extends StatelessWidget {
   final String groupCode;
   final int owned;
   final int total;
-  final List<dynamic> teams;
+  final List<Team> teams;
   const _GroupCard({
     required this.groupCode,
     required this.owned,
@@ -110,7 +249,7 @@ class _GroupCard extends StatelessWidget {
 }
 
 class _TeamRow extends StatelessWidget {
-  final dynamic team;
+  final Team team;
   const _TeamRow({required this.team});
 
   @override

@@ -6,12 +6,14 @@ class StickerTile extends StatelessWidget {
   final Sticker sticker;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final VoidCallback? onLongPress;
 
   const StickerTile({
     super.key,
     required this.sticker,
     required this.onIncrement,
     required this.onDecrement,
+    this.onLongPress,
   });
 
   @override
@@ -36,7 +38,7 @@ class StickerTile extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: onIncrement,
-      onLongPress: onDecrement,
+      onLongPress: onLongPress,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(
@@ -47,45 +49,83 @@ class StickerTile extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Stack(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sticker.label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: has ? scheme.onSurface : scheme.onSurfaceVariant,
-                    letterSpacing: 0.3,
+            Padding(
+              padding: const EdgeInsets.only(top: 22),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sticker.label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: has ? scheme.onSurface : scheme.onSurfaceVariant,
+                      letterSpacing: 0.3,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  sticker.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: scheme.onSurfaceVariant,
-                    height: 1.15,
+                  const SizedBox(height: 4),
+                  Text(
+                    sticker.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: scheme.onSurfaceVariant,
+                      height: 1.15,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             if (has)
               Positioned(
+                top: -4,
+                right: -4,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: onDecrement,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: scheme.errorContainer,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: scheme.error.withValues(alpha: 0.7),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.remove_rounded,
+                          size: 16,
+                          color: scheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (has)
+              Positioned(
                 top: 0,
-                right: 0,
+                left: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     color: dups > 0 ? scheme.tertiary : scheme.primary,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     dups > 0 ? Icons.swap_horiz_rounded : Icons.check_rounded,
-                    size: 14,
+                    size: 12,
                     color: dups > 0 ? scheme.onTertiary : scheme.onPrimary,
                   ),
                 ),

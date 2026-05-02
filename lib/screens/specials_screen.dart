@@ -88,7 +88,8 @@ class _SectionGrid extends StatelessWidget {
               return StickerTile(
                 sticker: s,
                 onIncrement: () => p.increment(s.id),
-                onDecrement: () => showStickerCounterSheet(context, s.id),
+                onDecrement: () => p.decrement(s.id),
+                onLongPress: () => showStickerCounterSheet(context, s.id),
               );
             },
           ),

@@ -148,7 +148,7 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Toca para sumar · mantén presionado para ajustar',
+                    'Toca para sumar · usa el "−" para quitar · mantén presionado para ajustar',
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
                       fontSize: 12,
@@ -184,7 +184,8 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
                       return StickerTile(
                         sticker: s,
                         onIncrement: () => p.increment(s.id),
-                        onDecrement: () =>
+                        onDecrement: () => p.decrement(s.id),
+                        onLongPress: () =>
                             showStickerCounterSheet(context, s.id),
                       );
                     },
