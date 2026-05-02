@@ -48,7 +48,30 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
           children: [
             Text(team.flag, style: const TextStyle(fontSize: 26)),
             const SizedBox(width: 8),
-            Flexible(child: Text(team.name)),
+            Flexible(
+              child: Text(
+                team.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                team.code,
+                style: TextStyle(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ),
           ],
         ),
       ),
