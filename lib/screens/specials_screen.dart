@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/sticker_provider.dart';
+import '../widgets/counter_sheet.dart';
 import '../widgets/sticker_tile.dart';
 
 class SpecialsScreen extends StatelessWidget {
@@ -87,7 +88,7 @@ class _SectionGrid extends StatelessWidget {
               return StickerTile(
                 sticker: s,
                 onIncrement: () => p.increment(s.id),
-                onDecrement: () => p.decrement(s.id),
+                onDecrement: () => showStickerCounterSheet(context, s.id),
               );
             },
           ),
