@@ -10,6 +10,7 @@ class Sticker {
   final StickerKind kind;
   final int orderInTeam;
   int owned;
+  String? customName;
 
   Sticker({
     required this.id,
@@ -21,22 +22,15 @@ class Sticker {
     this.groupCode,
     this.teamCode,
     this.owned = 0,
+    this.customName,
   });
 
   bool get isOwned => owned > 0;
   int get duplicates => owned > 1 ? owned - 1 : 0;
-
-  Sticker copyWith({int? owned}) => Sticker(
-        id: id,
-        label: label,
-        name: name,
-        section: section,
-        kind: kind,
-        orderInTeam: orderInTeam,
-        groupCode: groupCode,
-        teamCode: teamCode,
-        owned: owned ?? this.owned,
-      );
+  String get displayName =>
+      (customName != null && customName!.trim().isNotEmpty)
+          ? customName!.trim()
+          : name;
 
   Map<String, Object?> toMap() => {
         'id': id,
@@ -48,6 +42,7 @@ class Sticker {
         'kind': kind.name,
         'order_in_team': orderInTeam,
         'owned': owned,
+        'custom_name': customName,
       };
 
   static Sticker fromMap(Map<String, Object?> m) => Sticker(
@@ -60,5 +55,6 @@ class Sticker {
         kind: StickerKind.values.firstWhere((k) => k.name == m['kind']),
         orderInTeam: (m['order_in_team'] as int?) ?? 0,
         owned: (m['owned'] as int?) ?? 0,
+        customName: m['custom_name'] as String?,
       );
 }

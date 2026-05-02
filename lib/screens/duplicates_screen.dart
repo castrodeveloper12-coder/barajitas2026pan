@@ -141,7 +141,7 @@ class _DupRow extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              sticker.name,
+              sticker.displayName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.w600),

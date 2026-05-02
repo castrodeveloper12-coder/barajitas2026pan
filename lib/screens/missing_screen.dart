@@ -20,7 +20,7 @@ class _MissingScreenState extends State<MissingScreen> {
     final missing = p.missing.where((s) {
       if (_query.isEmpty) return true;
       final q = _query.toLowerCase();
-      return s.name.toLowerCase().contains(q) ||
+      return s.displayName.toLowerCase().contains(q) ||
           s.label.toLowerCase().contains(q) ||
           s.section.toLowerCase().contains(q);
     }).toList();
@@ -131,7 +131,7 @@ class _MissingRow extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              sticker.name,
+              sticker.displayName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

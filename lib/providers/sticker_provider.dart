@@ -93,6 +93,15 @@ class StickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> renameSticker(String id, String? customName) async {
+    final s = _byId[id];
+    if (s == null) return;
+    final clean = customName?.trim();
+    s.customName = (clean == null || clean.isEmpty) ? null : clean;
+    await _db.updateCustomName(id, s.customName);
+    notifyListeners();
+  }
+
   Future<void> resetAll() async {
     await _db.resetAll();
     for (final s in _byId.values) {
@@ -116,7 +125,7 @@ class StickerProvider extends ChangeNotifier {
     bySection.forEach((section, items) {
       lines.add('\n• $section');
       for (final s in items) {
-        lines.add('  ${s.label} — ${s.name}  ×${s.duplicates}');
+        lines.add('  ${s.label} — ${s.displayName}  ×${s.duplicates}');
       }
     });
     return lines.join('\n');

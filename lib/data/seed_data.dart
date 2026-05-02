@@ -79,15 +79,15 @@ const List<GroupInfo> kGroups = [
 ];
 
 const List<String> kIntroTitles = [
-  'Logo FIFA World Cup 2026',
-  'Trofeo de la Copa del Mundo',
-  'Balón Oficial',
-  'Mascotas Maple, Zayu y Clutch',
-  'Estadios anfitriones (collage)',
-  'Canadá - País anfitrión',
-  'México - País anfitrión',
-  'Estados Unidos - País anfitrión',
-  'Cuadro del torneo',
+  'Trofeo (1/2)',
+  'Trofeo (2/2)',
+  'Mascotas oficiales (Maple · Zayu · Clutch)',
+  'Eslogan oficial',
+  'Balón oficial',
+  'Canadá · país anfitrión',
+  'México · país anfitrión',
+  'Estados Unidos · país anfitrión',
+  'Emblema oficial del torneo',
 ];
 
 const List<String> kMuseumTitles = [

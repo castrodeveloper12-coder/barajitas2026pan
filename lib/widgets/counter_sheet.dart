@@ -62,14 +62,37 @@ class _CounterSheet extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              s.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    s.displayName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Renombrar',
+                  icon: const Icon(Icons.edit_outlined),
+                  onPressed: () => _renameSticker(context, s),
+                ),
+              ],
             ),
-            const SizedBox(height: 18),
+            if (s.customName != null && s.customName!.trim().isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: 4),
+                child: Text(
+                  'original: ${s.name}',
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
               decoration: BoxDecoration(
@@ -141,6 +164,57 @@ class _CounterSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _renameSticker(BuildContext context, Sticker s) async {
+  final controller = TextEditingController(text: s.customName ?? '');
+  final result = await showDialog<String?>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text('Renombrar ${s.label}'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Nombre por defecto: ${s.name}',
+            style: TextStyle(
+              color: Theme.of(dialogContext).colorScheme.onSurfaceVariant,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              hintText: 'Nuevo nombre (vacío = restaurar)',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: const Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, ''),
+          child: const Text('Restaurar'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(dialogContext, controller.text),
+          child: const Text('Guardar'),
+        ),
+      ],
+    ),
+  );
+  if (result == null || !context.mounted) return;
+  await context
+      .read<StickerProvider>()
+      .renameSticker(s.id, result.isEmpty ? null : result);
 }
 
 class _CounterButton extends StatelessWidget {

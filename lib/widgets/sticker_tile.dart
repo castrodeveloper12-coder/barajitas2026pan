@@ -66,7 +66,7 @@ class StickerTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    sticker.name,
+                    sticker.displayName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
