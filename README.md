@@ -22,22 +22,31 @@ Total registrable en la app: **992** stickers.
 - **Faltantes** con buscador.
 - **Reiniciar álbum** desde el menú.
 
-## Cómo correrla
+## Cómo obtener el APK (sin instalar nada)
 
-> Este repositorio contiene únicamente el código Dart y la configuración. Antes de correr necesitas que Flutter genere las carpetas de plataforma (`android/`, `ios/`, etc.).
+El repo incluye un workflow de **GitHub Actions** (`.github/workflows/build-apk.yml`) que compila el APK en cada push.
+
+1. Ve a la pestaña **Actions** del repo en GitHub.
+2. Abre la última ejecución del job **Build APK** y espera a que termine en verde (~5-7 min).
+3. En la sección **Artifacts** descarga:
+   - `panini-2026-apk-universal` → un solo `app-release.apk` (instala en cualquier Android).
+   - `panini-2026-apks-split` → APKs separados por arquitectura (más livianos).
+4. Pasa el `.apk` al teléfono e instálalo (puede pedirte habilitar "Orígenes desconocidos").
+
+> Tip: si creas un tag `vX.Y.Z` (`git tag v1.0.0 && git push --tags`), el workflow además publica los APKs como **GitHub Release** con descarga directa.
+
+## Cómo correrla en local (opcional)
 
 ```bash
-# 1. Instala Flutter (si no lo tienes): https://docs.flutter.dev/get-started/install
-flutter --version  # 3.19+ recomendado
+# 1. Instala Flutter (≥ 3.27): https://docs.flutter.dev/get-started/install
+flutter --version
 
 # 2. Genera las carpetas nativas dentro del proyecto
 cd barajitas2026pan
 flutter create .   # respeta el código existente y solo crea lo que falta
 
-# 3. Instala dependencias
+# 3. Instala dependencias y corre
 flutter pub get
-
-# 4. Corre en tu dispositivo o emulador
 flutter run
 ```
 
