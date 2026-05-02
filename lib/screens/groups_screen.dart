@@ -132,15 +132,42 @@ class _SearchResults extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          t.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                t.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: scheme.surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                t.code,
+                                style: TextStyle(
+                                  color: scheme.onSurfaceVariant,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 2),
                         Text(
-                          'Grupo ${t.groupCode} · ${t.code}',
+                          'Grupo ${t.groupCode}',
                           style: TextStyle(color: scheme.onSurfaceVariant),
                         ),
                       ],

@@ -78,30 +78,29 @@ const List<GroupInfo> kGroups = [
   ]),
 ];
 
+/// 00 + FWC 1–19: Introducción + Historia de campeones
+/// Checklist oficial verificado de Panini FIFA World Cup 2026.
 const List<String> kIntroTitles = [
-  'Trofeo (1/2)',
-  'Trofeo (2/2)',
-  'Mascotas oficiales (Maple · Zayu · Clutch)',
-  'Eslogan oficial',
-  'Balón oficial',
-  'Canadá · país anfitrión',
-  'México · país anfitrión',
-  'Estados Unidos · país anfitrión',
-  'Emblema oficial del torneo',
-];
-
-const List<String> kMuseumTitles = [
-  'Uruguay 1930',
-  'Italia 1934 / 1938',
-  'Alemania 1954 / 1974 / 1990 / 2014',
-  'Brasil 1958 / 1962 / 1970 / 1994 / 2002',
-  'Inglaterra 1966',
-  'Argentina 1978 / 1986 / 2022',
-  'Francia 1998 / 2018',
-  'España 2010',
-  'Trofeo histórico',
-  'Mejores momentos',
-  'Estrellas legendarias',
+  'Sello Panini',                              // 00
+  'Emblema oficial (1/2)',                      // FWC 1
+  'Emblema oficial (2/2)',                      // FWC 2
+  'Mascotas oficiales (Maple · Zayu · Clutch)', // FWC 3
+  'Eslogan oficial',                            // FWC 4
+  'Balón oficial',                              // FWC 5
+  'Emblema sede · CAN (Canadá)',                // FWC 6
+  'Emblema sede · MEX (México)',                 // FWC 7
+  'Emblema sede · USA (Estados Unidos)',         // FWC 8
+  'Italia 1934',                                // FWC 9
+  'Uruguay 1950',                               // FWC 10
+  'Alemania 1954',                              // FWC 11
+  'Brasil 1962',                                // FWC 12
+  'Alemania 1974',                              // FWC 13
+  'Argentina 1986',                             // FWC 14
+  'Brasil 1994',                                // FWC 15
+  'Brasil 2002',                                // FWC 16
+  'Italia 2006',                                // FWC 17
+  'Alemania 2014',                              // FWC 18
+  'Argentina 2022',                             // FWC 19
 ];
 
 const List<String> kCocaColaLegends = [
@@ -125,9 +124,10 @@ List<Sticker> buildAllStickers() {
 
   // Sección Introducción
   for (var i = 0; i < kIntroTitles.length; i++) {
+    final isZero = i == 0;
     list.add(Sticker(
-      id: 'INT${i + 1}',
-      label: 'FWC${i + 1}',
+      id: isZero ? 'INT_00' : 'INT_$i',
+      label: isZero ? '00' : 'FWC $i',
       name: kIntroTitles[i],
       section: 'Introducción',
       kind: StickerKind.intro,
@@ -174,18 +174,6 @@ List<Sticker> buildAllStickers() {
         ));
       }
     }
-  }
-
-  // FIFA Museum
-  for (var i = 0; i < kMuseumTitles.length; i++) {
-    list.add(Sticker(
-      id: 'MUS${i + 1}',
-      label: 'MUS${i + 1}',
-      name: kMuseumTitles[i],
-      section: 'FIFA Museum',
-      kind: StickerKind.museum,
-      orderInTeam: i + 1,
-    ));
   }
 
   // Coca-Cola Legends

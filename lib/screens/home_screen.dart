@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
             _NavCard(
               icon: Icons.auto_awesome_rounded,
               title: 'Especiales',
-              subtitle: 'Introducción · FIFA Museum · Coca-Cola Legends',
+              subtitle: 'FWC (00–19) · Coca-Cola Legends',
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const SpecialsScreen()),

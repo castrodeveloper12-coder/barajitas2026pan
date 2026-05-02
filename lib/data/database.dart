@@ -57,8 +57,11 @@ class StickerDatabase {
   }
 
   Future<void> _syncDefaults(Database db) async {
+    final seeds = buildAllStickers();
+
+    // Upsert: insertar nuevos o actualizar metadatos sin tocar 'owned' ni 'custom_name'.
     final batch = db.batch();
-    for (final s in buildAllStickers()) {
+    for (final s in seeds) {
       batch.rawInsert(
         '''INSERT INTO stickers
              (id, label, name, section, group_code, team_code, kind, order_in_team, owned)
@@ -85,6 +88,19 @@ class StickerDatabase {
       );
     }
     await batch.commit(noResult: true);
+
+    // Eliminar stickers huérfanos (IDs que ya no existen en el código)
+    final validIds = seeds.map((s) => s.id).toSet();
+    final rows = await db.query('stickers', columns: ['id']);
+    final dbIds = rows.map((r) => r['id'] as String).toList();
+    final orphans = dbIds.where((id) => !validIds.contains(id)).toList();
+    if (orphans.isNotEmpty) {
+      final placeholders = List.filled(orphans.length, '?').join(',');
+      await db.rawDelete(
+        'DELETE FROM stickers WHERE id IN ($placeholders)',
+        orphans,
+      );
+    }
   }
 
   Future<List<Sticker>> getAll() async {

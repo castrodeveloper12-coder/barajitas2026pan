@@ -10,7 +10,6 @@ class SpecialsScreen extends StatelessWidget {
 
   static const _sections = [
     ('Introducción', 'Introducción'),
-    ('FIFA Museum', 'FIFA Museum'),
     ('Coca-Cola Legends', 'Coca-Cola Legends'),
   ];
 
