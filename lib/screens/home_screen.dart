@@ -5,6 +5,7 @@ import '../providers/sticker_provider.dart';
 import '../widgets/progress_card.dart';
 import 'duplicates_screen.dart';
 import 'groups_screen.dart';
+import 'search_screen.dart';
 import 'specials_screen.dart';
 import 'missing_screen.dart';
 
@@ -23,6 +24,14 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Panini FIFA 2026'),
         actions: [
           IconButton(
+            tooltip: 'Buscar barajita',
+            icon: const Icon(Icons.search_rounded),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
+            ),
+          ),
+          IconButton(
             tooltip: 'Reiniciar',
             icon: const Icon(Icons.restart_alt_rounded),
             onPressed: () => _confirmReset(context),
@@ -39,6 +48,9 @@ class HomeScreen extends StatelessWidget {
               duplicates: p.duplicatesCount,
               missing: p.missingCount,
             ),
+            const SizedBox(height: 16),
+            // ── Quick search card ─────────────────────────
+            _SearchCard(),
             const SizedBox(height: 20),
             Text(
               'Explorar',
@@ -183,6 +195,78 @@ class _NavCard extends StatelessWidget {
               ),
               Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Quick search card ──────────────────────────────────────────────────────
+class _SearchCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SearchScreen()),
+        ),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                scheme.primary.withValues(alpha: 0.85),
+                scheme.secondary.withValues(alpha: 0.75),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: scheme.onPrimary.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(Icons.search_rounded, color: scheme.onPrimary, size: 26),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Búsqueda rápida',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 17,
+                          color: scheme.onPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '¿La tengo? ¿Me falta? ¿Repetida?',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: scheme.onPrimary.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_rounded, color: scheme.onPrimary),
+              ],
+            ),
           ),
         ),
       ),
