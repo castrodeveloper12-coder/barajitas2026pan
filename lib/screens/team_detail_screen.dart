@@ -5,6 +5,7 @@ import '../models/team.dart';
 import '../providers/sticker_provider.dart';
 import '../widgets/counter_sheet.dart';
 import '../widgets/sticker_tile.dart';
+import 'matches_screen.dart';
 
 enum _TeamFilter { all, owned, missing, duplicates }
 
@@ -74,6 +75,18 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Partidos del equipo',
+            icon: const Icon(Icons.sports_soccer_rounded),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => MatchesScreen(filterTeamCode: team.code),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

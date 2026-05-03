@@ -149,29 +149,36 @@ List<Sticker> buildAllStickers() {
         kind: StickerKind.crest,
         orderInTeam: 1,
       ));
-      // 2: Foto del equipo
-      list.add(Sticker(
-        id: '${team.code}_PHOTO',
-        label: '${team.code} 2',
-        name: 'Foto oficial del equipo',
-        section: team.name,
-        groupCode: group.code,
-        teamCode: team.code,
-        kind: StickerKind.teamPhoto,
-        orderInTeam: 2,
-      ));
-      // 3..20: Jugadores
-      for (var p = 1; p <= 18; p++) {
-        list.add(Sticker(
-          id: '${team.code}_P$p',
-          label: '${team.code} ${p + 2}',
-          name: 'Jugador #$p',
-          section: team.name,
-          groupCode: group.code,
-          teamCode: team.code,
-          kind: StickerKind.player,
-          orderInTeam: p + 2,
-        ));
+
+      // 2..20: Jugadores y Foto de Equipo en la posición 13
+      int playerCounter = 1;
+      for (var n = 2; n <= 20; n++) {
+        if (n == 13) {
+          // 13: Foto del equipo
+          list.add(Sticker(
+            id: '${team.code}_PHOTO',
+            label: '${team.code} 13',
+            name: 'Foto oficial del equipo',
+            section: team.name,
+            groupCode: group.code,
+            teamCode: team.code,
+            kind: StickerKind.teamPhoto,
+            orderInTeam: 13,
+          ));
+        } else {
+          // Jugador
+          list.add(Sticker(
+            id: '${team.code}_P$playerCounter',
+            label: '${team.code} $n',
+            name: 'Jugador #$playerCounter',
+            section: team.name,
+            groupCode: group.code,
+            teamCode: team.code,
+            kind: StickerKind.player,
+            orderInTeam: n,
+          ));
+          playerCounter++;
+        }
       }
     }
   }

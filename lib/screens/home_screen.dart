@@ -5,6 +5,7 @@ import '../providers/sticker_provider.dart';
 import '../widgets/progress_card.dart';
 import 'duplicates_screen.dart';
 import 'groups_screen.dart';
+import 'matches_screen.dart';
 import 'search_screen.dart';
 import 'specials_screen.dart';
 import 'missing_screen.dart';
@@ -76,6 +77,16 @@ class HomeScreen extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const SpecialsScreen()),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _NavCard(
+              icon: Icons.calendar_month_rounded,
+              title: 'Calendario',
+              subtitle: 'Partidos, resultados y posiciones',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MatchesScreen()),
               ),
             ),
             const SizedBox(height: 10),

@@ -20,7 +20,7 @@ class StickerDatabase {
     final path = p.join(dir, 'panini_2026.db');
     final db = await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE stickers (
@@ -36,6 +36,15 @@ class StickerDatabase {
             custom_name TEXT
           )
         ''');
+        await db.execute('''
+          CREATE TABLE match_results (
+            match_id INTEGER PRIMARY KEY,
+            home_score INTEGER,
+            away_score INTEGER,
+            home_pen INTEGER,
+            away_pen INTEGER
+          )
+        ''');
         final batch = db.batch();
         for (final s in buildAllStickers()) {
           batch.insert('stickers', s.toMap());
@@ -47,6 +56,17 @@ class StickerDatabase {
           await db.execute(
             "ALTER TABLE stickers ADD COLUMN custom_name TEXT",
           );
+        }
+        if (oldVersion < 3) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS match_results (
+              match_id INTEGER PRIMARY KEY,
+              home_score INTEGER,
+              away_score INTEGER,
+              home_pen INTEGER,
+              away_pen INTEGER
+            )
+          ''');
         }
       },
     );
@@ -132,5 +152,46 @@ class StickerDatabase {
   Future<void> resetAll() async {
     final db = await database;
     await db.update('stickers', {'owned': 0});
+  }
+
+  // ── Resultados de partidos ──────────────────────────────────────────
+  Future<List<Map<String, Object?>>> getAllMatchResults() async {
+    final db = await database;
+    return db.query('match_results');
+  }
+
+  Future<void> upsertMatchResult({
+    required int matchId,
+    required int homeScore,
+    required int awayScore,
+    int? homePen,
+    int? awayPen,
+  }) async {
+    final db = await database;
+    await db.insert(
+      'match_results',
+      {
+        'match_id': matchId,
+        'home_score': homeScore,
+        'away_score': awayScore,
+        'home_pen': homePen,
+        'away_pen': awayPen,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> clearMatchResult(int matchId) async {
+    final db = await database;
+    await db.delete(
+      'match_results',
+      where: 'match_id = ?',
+      whereArgs: [matchId],
+    );
+  }
+
+  Future<void> resetAllMatchResults() async {
+    final db = await database;
+    await db.delete('match_results');
   }
 }
