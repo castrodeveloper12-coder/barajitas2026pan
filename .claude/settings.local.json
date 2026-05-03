@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze *)",
+      "WebFetch(domain:www.fifa.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(grep -vE \"test\\\\\\\\\\\\\\\\widget_test|sticker_provider\\\\.dart|duplicates_screen\\\\.dart|bin\\\\\\\\\\\\\\\\check_count\")",
+      "Bash(flutter build *)"
+    ]
+  }
+}
