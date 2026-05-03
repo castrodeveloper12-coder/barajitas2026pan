@@ -92,10 +92,21 @@ class _MatchDetailScreenState extends State<MatchDetailScreen> {
                         size: 18, color: scheme.onSurfaceVariant),
                     const SizedBox(width: 6),
                     Text(
-                      formatMatchDate(m.date),
+                      formatColombiaDate(m),
                       style: TextStyle(
                         color: scheme.onSurface,
                         fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Icon(Icons.schedule_rounded,
+                        size: 16, color: scheme.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${formatColombiaTime(m)} h Colombia',
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],

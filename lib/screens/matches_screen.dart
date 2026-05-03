@@ -29,6 +29,24 @@ String formatMatchDate(DateTime d) {
   return '$dn ${d.day} de ${_monthNames[d.month - 1]}';
 }
 
+/// Convierte la hora local del estadio a hora Colombia (UTC-5).
+DateTime toColombiaTime(DateTime stadiumLocal, int venueUtcOffsetHours) {
+  const colombiaOffset = -5;
+  return stadiumLocal.add(Duration(hours: colombiaOffset - venueUtcOffsetHours));
+}
+
+String formatColombiaTime(WorldCupMatch m) {
+  final col = toColombiaTime(m.date, m.utcOffsetHours);
+  final h = col.hour.toString().padLeft(2, '0');
+  final mm = col.minute.toString().padLeft(2, '0');
+  return '$h:$mm';
+}
+
+String formatColombiaDate(WorldCupMatch m) {
+  final col = toColombiaTime(m.date, m.utcOffsetHours);
+  return formatMatchDate(col);
+}
+
 Team? teamFromCode(String? code) {
   if (code == null) return null;
   for (final g in kGroups) {
@@ -93,9 +111,11 @@ class _MatchesScreenState extends State<MatchesScreen> {
       return a.id.compareTo(b.id);
     });
 
+    // Agrupamos por fecha en hora Colombia (no por fecha del estadio).
     final byDate = <DateTime, List<WorldCupMatch>>{};
     for (final m in matches) {
-      final key = DateTime(m.date.year, m.date.month, m.date.day);
+      final col = toColombiaTime(m.date, m.utcOffsetHours);
+      final key = DateTime(col.year, col.month, col.day);
       byDate.putIfAbsent(key, () => []).add(m);
     }
     final orderedDates = byDate.keys.toList()..sort();
@@ -311,6 +331,19 @@ class _MatchCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  Icon(Icons.schedule_rounded,
+                      size: 12,
+                      color: scheme.onSurfaceVariant.withValues(alpha: 0.7)),
+                  const SizedBox(width: 3),
+                  Text(
+                    '${formatColombiaTime(match)} COL',
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   Text(
                     played ? 'Final' : 'Pendiente',
                     style: TextStyle(

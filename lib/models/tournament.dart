@@ -67,9 +67,14 @@ class WorldCupMatch {
   int? homePenalties;
   int? awayPenalties;
 
+  /// Hora del kickoff expresada como "reloj de pared" del estadio (local).
+  /// Para convertir a otras zonas, sumar/restar la diferencia respecto a [utcOffsetHours].
   final DateTime date;
   final String stadium;
   final String city;
+
+  /// Offset del estadio respecto a UTC, en horas (ej. -4 para EDT, -6 para CDMX).
+  final int utcOffsetHours;
 
   WorldCupMatch({
     required this.id,
@@ -79,6 +84,7 @@ class WorldCupMatch {
     required this.date,
     required this.stadium,
     required this.city,
+    required this.utcOffsetHours,
     this.groupCode,
     this.resolvedHomeTeam,
     this.resolvedAwayTeam,
